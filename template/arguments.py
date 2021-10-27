@@ -35,9 +35,6 @@ def parse_args(extra_args_provider=None, defaults={},
     parser = _add_validation_args(parser)
     parser = _add_transformer_args(parser)
     parser = _add_lstm_args(parser)
-    parser = _add_ODE_args(parser)
-    parser = _add_lstmtransformer_args(parser)
-    parser = _add_diabetes_args(parser)
 
     # Custom arguments.
     if extra_args_provider is not None:
@@ -113,6 +110,10 @@ def _add_training_args(parser):
                        'training runs.')
     group.add_argument('--go-on-train', type=int, default=0)
     group.add_argument('--fake', type=str, default="")
+    group.add_argument('--take_output', type=str, default="maxpooling")
+    group.add_argument('--activation', type=str, default="tanh")
+    group.add_argument('--hidden', type=int, default=512)
+    group.add_argument('--noglove', type=int, default=0)
     return parser
 
 
@@ -150,6 +151,8 @@ def _add_checkpointing_args(parser):
     group.add_argument('--no-save-optim', action='store_true',
                        help='Do not save current optimizer.')
     group.add_argument('--load', type=str, default=None,
+                       help='Directory containing a model checkpoint.')
+    group.add_argument('--train', type=int, default=1,
                        help='Directory containing a model checkpoint.')
     group.add_argument('--no-load-optim', action='store_true',
                        help='Do not load optimizer when loading checkpoint.')
@@ -214,6 +217,9 @@ def _add_data_args(parser):
     group.add_argument('--num-workers', type=int, default=8,
                        help="Dataloader number of workers.")
     group.add_argument('--split-factor', type=float, default=0.85)
+    group.add_argument('--Ngram', type=int, default=0)
+    group.add_argument('--Punc', type=int, default=0)
+    group.add_argument('--UpperCase', type=int, default=0)
     return parser
 
 
@@ -250,33 +256,4 @@ def _add_lstm_args(parser):
     return parser
 
 
-def _add_ODE_args(parser):
-    group = parser.add_argument_group(title='some arguments related to ODENet')
-    group.add_argument('--ODE-N', type=int, default=5)
-    group.add_argument('--ODE-hidden-dim', type=int, default=40)
-    group.add_argument('--ODE-d-model', type=int, default=40)
-    group.add_argument('--ODE-d-ff', type=int, default=40)
-    group.add_argument('--ODE-h', type=int, default=1)
-    group.add_argument('--drop-rate', type=float, default=0.35)
-    group.add_argument('--ODE-time-dim', type=int, default=15)
-    group.add_argument('--info-dim', type=float, default=10)
-    group.add_argument('--split-pos', type=tuple, default=())
-    group.add_argument('--tgt-vocab', type=int, default=1)
-    group.add_argument("--use-naive-net", default=False, action="store_true")
-    return parser
-
-def _add_diabetes_args(parser):
-    group = parser.add_argument_group(title='some arguments related to diabetes')
-    group.add_argument('--insulin-classification-id', type=int, default=0)
-    group.add_argument('--no-insulin', type=int, default=0)
-    group.add_argument('--no-drug', type=int, default=0)
-    group.add_argument('--no-examination', type=int, default=0)
-    group.add_argument('--no-day', type=int, default=0)
-    group.add_argument('--no-time', type=int, default=0)
-    group.add_argument('--no-sugar', type=int, default=0)
-    group.add_argument('--examination-dim', type=int, default=156)
-    group.add_argument('--drug-dim', type=int, default=28)
-    group.add_argument('--insulin-dim', type=int, default=3)
-    group.add_argument('--sugar-dim', type=int, default=2)
-    return parser
 

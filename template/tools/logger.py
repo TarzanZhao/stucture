@@ -30,5 +30,9 @@ def initialize_logger(save_path, overwrite=True):
     global logger
     logger = LogRecorder(save_path+"/log.txt", overwrite)
 
+def initialize_test_logger(save_path, overwrite=True):
+    global logger
+    logger = LogRecorder(save_path+"/test_log.txt", overwrite)
+
 def get_logger():
     return logger

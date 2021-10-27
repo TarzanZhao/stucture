@@ -9,9 +9,9 @@ def pretrain(model_provider_func, optimizer_provider_func, lr_scheduler_func=Non
     args = get_args()
     log = get_logger()
 
+    data_provider = data_provide_func(args, None)
     model = model_provider_func(args)
     log.info(str(model))
-    data_provider = data_provide_func(args, model)
     optimizer = optimizer_provider_func(model, args)
     lr_scheduler = lr_scheduler_func(optimizer, args) if lr_scheduler_func is not None else None
     callback_train, callback_eval = callback_provide_func(args)
@@ -36,10 +36,10 @@ def train_one_epoch(epoch_idx, model, dataloader, optimizer, lr_scheduler, callb
         for idx, data in enumerate(pbar):
             callback.start_step(data=data)
             loss, output= train_one_step( (idx+1) % args.optimizer_step_interval == 0 or (idx+1)==len(dataloader),  model, data, optimizer)
-            if lr_scheduler is not None:
-                lr_scheduler.step()
             callback.end_step(loss=loss, output=output)
             pbar.set_description("Epoch: %d, Loss: %0.8f, lr: %0.6f" % (epoch_idx + 1, callback.show_loss, optimizer.param_groups[0]['lr']))
+    if lr_scheduler is not None:
+        lr_scheduler.step()
     callback.end_epoch()
 
 def train(model, data_provider, optimizer, lr_scheduler, callback_train, callback_eval):

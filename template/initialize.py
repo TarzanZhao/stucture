@@ -1,5 +1,5 @@
 from template.arguments import parse_args, get_args, print_args
-from template.tools.logger import initialize_logger, get_logger
+from template.tools.logger import initialize_logger, get_logger, initialize_test_logger
 import torch
 import os
 import numpy as np
@@ -35,7 +35,7 @@ def initialize():
     parse_args(post_process_args=post_process_args)
     args = get_args()
 
-    if args.go_on_train == 0:
+    if args.go_on_train == 0 and args.train==1:
         if os.path.exists(args.save_folder):
             ans = input(
                 "Path already exists, do you want to cover it?(0/1) : ")
@@ -46,7 +46,10 @@ def initialize():
                 del_file(args.save_folder)
         os.makedirs(args.save_folder)
 
-    initialize_logger(args.save_folder)
+    if args.train==1:
+        initialize_logger(args.save_folder)
+    else:
+        initialize_test_logger(args.save_folder)
     print_args(args)
 
     np.random.seed(args.seed)

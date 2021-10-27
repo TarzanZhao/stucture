@@ -10,6 +10,7 @@ def preeval(model_provider_func, data_provider_func, callback_func):
     args = get_args()
     dataset, dataloader = data_provider_func(args)
     model = model_provider_func(args)
+    model.load_state_dict(torch.load(args.save_folder+"/best.pth", map_location=model.device))
     callback_eval = callback_func(args)
     callback_eval.initialize(model=model)
     evaluate(model, dataloader, callback_eval)

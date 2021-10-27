@@ -1,4 +1,9 @@
+expe/
+glove
+yelp_small
 *.sh
+*md
+*.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
